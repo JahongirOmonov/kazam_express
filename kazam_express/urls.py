@@ -25,5 +25,7 @@ urlpatterns = [
     path('category-search-id-title-parent/', views.CategorySearchIdTitleParentApiView.as_view()),
     path('category-create/', views.CategoryCreateApiView.as_view()),
     path('category-path/<int:pk>', views.CategoryPathRetrieveApiView.as_view()),
+    #
+    path('products/', views.ProductImagesAliView.as_view(), name='product-list-create'),
 
 ]

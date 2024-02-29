@@ -12,14 +12,50 @@ class ShopSerializer(serializers.ModelSerializer):
             'imageUrl'
         )
 
-
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Image
+        fields = ('id', 'image', 'product',)
+        extra_kwargs = {
+            'product': {'required': False},
+        }
+
+class Product2Serializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True, required=False)
+
+    class Meta:
+        model = models.Product
         fields = (
             'id',
-            'image'
+            'title',
+            'description',
+            'amount',
+            'price',
+            'active',
+            'category',
+            'main_photo',
+            'images'
         )
+
+
+    def create(self, validated_data):
+        product = models.Product.objects.create(**validated_data)
+        try:
+            images_data = dict((self.context['request'].FILES).lists()).get('images', None)
+            for image in images_data:
+                models.Image.objects.create(product=product, image=image)
+        except:
+            models.Image.objects.create(product=product)
+        return product
+
+
+# class ImageSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = models.Image
+#         fields = (
+#             'id',
+#             'image'
+#         )
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -82,3 +118,37 @@ class CategoryPathSerializer(serializers.ModelSerializer):
             'parent',
             'products'
         )
+
+
+# class ImageqSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = models.Image
+#         fields = ('id', 'image', 'product', 'is_main')
+#
+#
+# class ProductqSerializer(serializers.ModelSerializer):
+#     images = serializers.SerializerMethodField()
+#
+#     def get_images(self, obj):
+#         images = models.Image.objects.filter(product=obj)
+#         return ImageqSerializer(images, many=True, read_only=False).data
+#
+#     class Meta:
+#         model = models.Product
+#         fields = (
+#             'id',
+#             'title',
+#             'description',
+#             'amount',
+#             'price',
+#             'active',
+#             'category',
+#             'main_photo',
+#             'images'
+#         )
+
+
+
+
+
+

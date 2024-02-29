@@ -50,7 +50,6 @@ class Image(BaseModel):
         if self.is_main:
             self.product.main_photo = self.image
             self.product.save()
-        # self.is_main = False
         super().save(*args, **kwargs)
 
     def __str__(self):
